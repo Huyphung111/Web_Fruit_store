@@ -1,6 +1,7 @@
 import { SUPABASE_CONFIG } from '../../config/app-config.js';
 
 const STORAGE_KEY = 'fruitNotes';
+const SHARED_CACHE_KEY = 'fruitSharedCacheV1';
 const TABLE_NAME = 'fruits';
 
 const supabaseUrl = String(SUPABASE_CONFIG.url || '').replace(/\/+$/, '');
@@ -45,6 +46,25 @@ function saveLocalFruits(fruits) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(fruits));
 }
 
+export function getCachedFruits() {
+  if (!isSharedDataEnabled) return loadLocalFruits();
+
+  try {
+    const parsed = JSON.parse(localStorage.getItem(SHARED_CACHE_KEY) || '[]');
+    return Array.isArray(parsed) ? parsed.map(normalizeFruit) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function cacheFruits(fruits) {
+  if (!isSharedDataEnabled) {
+    saveLocalFruits(fruits);
+    return;
+  }
+  localStorage.setItem(SHARED_CACHE_KEY, JSON.stringify(fruits));
+}
+
 async function supabaseRequest(query = '', options = {}) {
   const response = await fetch(
     `${supabaseUrl}/rest/v1/${TABLE_NAME}${query}`,
@@ -81,7 +101,9 @@ export async function fetchFruits() {
   const rows = await supabaseRequest(
     '?select=id,name,price,unit,created_at,updated_at&order=created_at.desc'
   );
-  return (rows || []).map(normalizeFruit);
+  const fruits = (rows || []).map(normalizeFruit);
+  cacheFruits(fruits);
+  return fruits;
 }
 
 export async function createFruit(fruit) {
@@ -147,4 +169,3 @@ export async function deleteFruit(id) {
     method: 'DELETE'
   });
 }
-

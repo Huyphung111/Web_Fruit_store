@@ -1,8 +1,10 @@
 // app.js - Giao diện bảng giá trái cây
 import {
+  cacheFruits,
   createFruit,
   deleteFruit,
   fetchFruits,
+  getCachedFruits,
   isSharedDataEnabled,
   syncIntervalMs,
   updateFruit
@@ -290,6 +292,7 @@ async function deleteNote(id) {
 
   // Cập nhật giao diện trước để nút xóa phản hồi ngay lập tức.
   const [removedNote] = cachedNotes.splice(index, 1);
+  cacheFruits(cachedNotes);
   renderNotes();
 
   try {
@@ -297,6 +300,7 @@ async function deleteNote(id) {
   } catch (error) {
     // Khôi phục đúng vị trí nếu server không thể xóa.
     cachedNotes.splice(index, 0, removedNote);
+    cacheFruits(cachedNotes);
     renderNotes();
     console.error('Không thể xóa trái cây:', error);
     alert(`Không thể xóa dữ liệu: ${error.message}`);
@@ -362,6 +366,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  await refreshNotes({ showLoading: true });
+  const cachedFruits = getCachedFruits();
+  if (cachedFruits.length > 0) {
+    cachedNotes = cachedFruits;
+    hasLoadedNotes = true;
+    renderNotes();
+  }
+
+  await refreshNotes({ showLoading: !hasLoadedNotes });
   startAutoSync();
 });
