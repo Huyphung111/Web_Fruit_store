@@ -1,27 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản Lý Trái Cây - Ghi Chú Giá</title>
+    <title>Quản Lý Trái Cây - Ghi Chú Giá Dạng Lưới</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
     <main class="container">
-        <h1>Ghi chú giá trái cây</h1>
-        <section class="add-note">
-            <input type="text" id="fruitName" placeholder="Tên trái cây" />
-            <input type="number" id="fruitPrice" placeholder="Giá (VND)" min="0" />
-            <button id="addBtn">Thêm</button>
+        <!-- Header Section -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="header-icon">🍇</div>
+                <div>
+                    <h1>Quản Lý Giá Trái Cây</h1>
+                    <p class="subtitle">Bảng ghi chú & theo dõi giá trái cây dạng lưới sinh động</p>
+                </div>
+            </div>
+            <button type="button" id="openModalBtn" class="primary-add-btn">
+                ➕ Thêm Trái Cây Mới
+            </button>
+        </header>
+
+        <!-- Controls Bar (Search & Sort & Sample Data) -->
+        <section class="grid-controls">
+            <h2>Danh Sách Trái Cây</h2>
+            <div class="controls-actions">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Tìm nhanh trái cây..." />
+                </div>
+                <div class="sort-box">
+                    <span class="sort-label">Sắp xếp:</span>
+                    <select id="sortSelect">
+                        <option value="price-asc">Giá: Thấp đến Cao ⬆</option>
+                        <option value="price-desc">Giá: Cao đến Thấp ⬇</option>
+                        <option value="name-asc">Tên: A đến Z</option>
+                        <option value="newest">Mới thêm gần đây</option>
+                    </select>
+                </div>
+                <button type="button" id="loadSampleBtn" class="sample-btn" title="Nạp 100 dữ liệu mẫu để thử nghiệm hiệu năng siêu mượt">
+                    ⚡ Nạp 100 Mẫu Test
+                </button>
+            </div>
         </section>
-        <section class="notes-list" id="notesList">
-            <!-- Fruit notes will be rendered here -->
+
+        <!-- Modal Popup Box for Adding Fruit -->
+        <div class="modal-overlay" id="addModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h3>➕ Thêm Trái Cây Mới</h3>
+                    <button type="button" class="close-modal-btn" id="closeModalBtn" title="Đóng">&times;</button>
+                </div>
+                <form id="addForm" class="modal-form" onsubmit="event.preventDefault();">
+                    <div class="input-group">
+                        <label for="fruitName">Tên trái cây</label>
+                        <input type="text" id="fruitName" placeholder="VD: Táo Fuji, Xoài Cát..." required />
+                    </div>
+                    <div class="input-group">
+                        <label for="fruitPrice">Giá bán (VNĐ)</label>
+                        <input type="number" id="fruitPrice" placeholder="VD: 55000" min="0" step="500" required />
+                    </div>
+                    <div class="input-group">
+                        <label for="fruitUnit">Đơn vị tính</label>
+                        <select id="fruitUnit">
+                            <option value="kg">kg</option>
+                            <option value="trái">trái / quả</option>
+                            <option value="hộp">hộp / khay</option>
+                            <option value="túi">túi</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="cancelModalBtn" class="btn-secondary">Hủy</button>
+                        <button type="submit" id="addBtn" class="btn-primary">Thêm Vào Lưới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Fruit Grid Section -->
+        <section class="notes-grid" id="notesList">
+            <!-- Fruit note cards rendered dynamically -->
         </section>
     </main>
-    <script src="script.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
