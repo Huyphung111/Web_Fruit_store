@@ -46,44 +46,45 @@
             </div>
         </section>
 
-        <!-- Modal Popup Box for Adding Fruit -->
-        <div class="modal-overlay" id="addModal">
-            <div class="modal-box">
-                <div class="modal-header">
-                    <h3 id="modalTitle">➕ Thêm Trái Cây Mới</h3>
-                    <button type="button" class="close-modal-btn" id="closeModalBtn" title="Đóng">&times;</button>
-                </div>
-                <form id="addForm" class="modal-form" onsubmit="event.preventDefault();">
-                    <div class="input-group">
-                        <label for="fruitName">Tên trái cây</label>
-                        <input type="text" id="fruitName" placeholder="VD: Táo Fuji, Xoài Cát..." required />
-                    </div>
-                    <div class="input-group">
-                        <label for="fruitPrice">Giá bán (VNĐ)</label>
-                        <input type="number" id="fruitPrice" placeholder="VD: 55000" min="0" step="500" required />
-                    </div>
-                    <div class="input-group">
-                        <label for="fruitUnit">Đơn vị tính</label>
-                        <select id="fruitUnit">
-                            <option value="kg">kg</option>
-                            <option value="trái">trái / quả</option>
-                            <option value="hộp">hộp / khay</option>
-                            <option value="túi">túi</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id="cancelModalBtn" class="btn-secondary">Hủy</button>
-                        <button type="submit" id="addBtn" class="btn-primary">Thêm Vào Lưới</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- Fruit Grid Section -->
         <section class="notes-grid" id="notesList">
             <!-- Fruit note cards rendered dynamically -->
         </section>
     </main>
+
+    <!-- Modal nằm ngoài container để luôn căn giữa theo viewport. -->
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modalTitle">➕ Thêm Trái Cây Mới</h3>
+                <button type="button" class="close-modal-btn" id="closeModalBtn" title="Đóng">&times;</button>
+            </div>
+            <form id="addForm" class="modal-form" onsubmit="event.preventDefault();">
+                <div class="input-group">
+                    <label for="fruitName">Tên trái cây</label>
+                    <input type="text" id="fruitName" placeholder="VD: Táo Fuji, Xoài Cát..." required />
+                </div>
+                <div class="input-group">
+                    <label for="fruitPrice">Giá bán (VNĐ)</label>
+                    <input type="number" id="fruitPrice" placeholder="VD: 55000" min="0" step="500" required />
+                </div>
+                <div class="input-group">
+                    <label for="fruitUnit">Đơn vị tính</label>
+                    <select id="fruitUnit">
+                        <option value="kg">kg</option>
+                        <option value="trái">trái / quả</option>
+                        <option value="hộp">hộp / khay</option>
+                        <option value="túi">túi</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelModalBtn" class="btn-secondary">Hủy</button>
+                    <button type="submit" id="addBtn" class="btn-primary">Thêm Vào Lưới</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
