@@ -308,10 +308,19 @@ async function addNote() {
 }
 
 async function deleteNote(id) {
+  const index = cachedNotes.findIndex((item) => item.id === id);
+  if (index === -1) return;
+
+  // Cập nhật giao diện trước để nút xóa phản hồi ngay lập tức.
+  const [removedNote] = cachedNotes.splice(index, 1);
+  renderNotes();
+
   try {
     await deleteFruit(id);
-    await refreshNotes();
   } catch (error) {
+    // Khôi phục đúng vị trí nếu server không thể xóa.
+    cachedNotes.splice(index, 0, removedNote);
+    renderNotes();
     console.error('Không thể xóa trái cây:', error);
     alert(`Không thể xóa dữ liệu: ${error.message}`);
   }
