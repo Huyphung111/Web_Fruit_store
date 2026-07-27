@@ -26,7 +26,7 @@
             </button>
         </header>
 
-        <!-- Controls Bar (Search & Sort & Sample Data) -->
+        <!-- Controls Bar (Search & Sort) -->
         <section class="grid-controls">
             <h2>Danh Sách Trái Cây</h2>
             <div class="controls-actions">
@@ -43,9 +43,6 @@
                         <option value="newest">Mới thêm gần đây</option>
                     </select>
                 </div>
-                <button type="button" id="loadSampleBtn" class="sample-btn" title="Nạp 100 dữ liệu mẫu để thử nghiệm hiệu năng siêu mượt">
-                    ⚡ Nạp 100 Mẫu Test
-                </button>
             </div>
         </section>
 
@@ -53,7 +50,7 @@
         <div class="modal-overlay" id="addModal">
             <div class="modal-box">
                 <div class="modal-header">
-                    <h3>➕ Thêm Trái Cây Mới</h3>
+                    <h3 id="modalTitle">➕ Thêm Trái Cây Mới</h3>
                     <button type="button" class="close-modal-btn" id="closeModalBtn" title="Đóng">&times;</button>
                 </div>
                 <form id="addForm" class="modal-form" onsubmit="event.preventDefault();">

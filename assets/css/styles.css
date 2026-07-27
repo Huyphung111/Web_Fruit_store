@@ -332,27 +332,6 @@ body {
   cursor: pointer;
 }
 
-.sample-btn {
-  background: #fff7ed;
-  color: #c05621;
-  border: 1.5px solid #fed7aa;
-  border-radius: 10px;
-  padding: 0.45rem 0.9rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.sample-btn:hover {
-  background: #ffedd5;
-  border-color: #f97316;
-  color: #9a3412;
-  transform: translateY(-1px);
-}
-
 /* Fruit Grid Layout */
 .notes-grid {
   display: grid;
@@ -471,6 +450,27 @@ body {
   transition: all 0.2s ease;
 }
 
+.edit-btn {
+  background: #fef3c7;
+  color: #b45309;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: #f59e0b;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
 .delete-btn:hover {
   background: var(--danger-color);
   color: #ffffff;
@@ -491,4 +491,3 @@ body {
   font-size: 3rem;
   margin-bottom: 0.5rem;
 }
-

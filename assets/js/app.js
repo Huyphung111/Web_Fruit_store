@@ -1,52 +1,6 @@
 // app.js - Giao diện bảng giá trái cây
 import { loadNotes as loadStoredNotes, saveNotes as saveStoredNotes } from './data-service.js';
 
-function generate100SampleFruits() {
-  const fruitNames = [
-    'Táo Fuji Mỹ', 'Táo Envy New Zealand', 'Táo Xanh Ninh Thuận', 'Táo Red Delicious',
-    'Cam Sành Vĩnh Long', 'Cam Vàng Ai Cập', 'Cam Mật Tiền Giang', 'Quýt Đường Miền Tây',
-    'Chuối Laba Đà Lạt', 'Chuối Gà Sài Gòn', 'Chuối Ngự Quảng Nam', 'Chuối Tiêu Hồng',
-    'Dưa Hấu Không Hạt', 'Dưa Hấu Long An', 'Dưa Hấu Vàng', 'Dưa Hấu Khổng Lồ',
-    'Xoài Cát Hòa Lộc', 'Xoài Cát Chu Cao Lãnh', 'Xoài Tượng An Giang', 'Xoài Úc Khánh Hòa',
-    'Nho Mẫu Đơn Hàn Quốc', 'Nho Đen Không Hạt Mỹ', 'Nho Đỏ Ninh Thuận', 'Nho Xanh Ninh Thuận',
-    'Dâu Tây Đà Lạt', 'Dâu Tây Hàn Quốc', 'Dâu Tây Sơn La', 'Dâu Tây Nhật Bản',
-    'Bơ Sáp Đắk Lắk', 'Bơ 034 Lâm Đồng', 'Bơ Hass Nhập Khẩu', 'Bơ Cánh Gà',
-    'Sầu Riêng Ri6', 'Sầu Riêng Monthong', 'Sầu Riêng Musang King', 'Sầu Riêng Khổ Qua',
-    'Dừa Xiêm Bến Tre', 'Dừa Dứa Tam Quan', 'Dừa Sáp Cầu Kè', 'Dừa Lửa',
-    'Thanh Long Ruột Đỏ', 'Thanh Long Ruột Trắng', 'Thanh Long Vàng Bình Thuận',
-    'Kiwi Xanh New Zealand', 'Kiwi Vàng New Zealand', 'Kiwi Đỏ Nhập Khẩu',
-    'Bưởi Da Xanh Bến Tre', 'Bưởi Năm Roi Vĩnh Long', 'Bưởi Diễn Hà Nội', 'Bưởi Tân Triều',
-    'Ổi Nữ Hoàng', 'Ổi Xá Lị Tiền Giang', 'Ổi Ruột Hồng',
-    'Chanh Dây Đà Lạt', 'Chanh Vàng Mỹ', 'Chanh Đào Ngâm Mật',
-    'Măng Cụt Bến Tre', 'Măng Cụt Lái Thiêu', 'Việt Quất Nhập Khẩu',
-    'Đu Đủ Ruột Đỏ', 'Đu Đủ Thái Lan', 'Thơm Mật Đắk Nông', 'Khóm Cầu Đúc',
-    'Đào Tiên Sa Pa', 'Đào Vàng Hàn Quốc', 'Lê Đường Ninh Bình', 'Lê Nâu Hàn Quốc',
-    'Chôm Chôm Nhãn', 'Chôm Chôm Java', 'Chôm Chôm Thái', 'Vải Thiều Bắc Giang',
-    'Vải Hùng Long', 'Nhãn Lồng Hưng Yên', 'Nhãn Xuồng Cơm Vàng', 'Nhãn Tiêu Da Bò',
-    'Mận Hà Nội', 'Mận An Phước', 'Mận Tam Hoa Bắc Hà', 'Mãng Cầu Tây Ninh',
-    'Mãng Cầu Xiêm', 'Cà Chua Cherry', 'Cà Chua Socola Đà Lạt', 'Cherry Đỏ Mỹ',
-    'Cherry Vàng Rainier', 'Mít Thái Siêu Sớm', 'Mít Tố Nữ', 'Mít Ruột Đỏ',
-    'Hồng Giòn Đà Lạt', 'Hồng Treo Gió', 'Vú Sữa Lò Rèn', 'Vú Sữa Hoàng Kim',
-    'Khế Ngọt Miền Tây', 'Lựu Đỏ Ấn Độ', 'Cóc Thái Giòn', 'Cóc Chín Cây'
-  ];
-
-  const units = ['kg', 'trái', 'hộp', 'túi'];
-  const fruits = [];
-
-  for (let i = 0; i < 100; i++) {
-    const baseName = fruitNames[i % fruitNames.length];
-    const suffix = i >= fruitNames.length ? ` (Hạng ${Math.floor(i / fruitNames.length) + 1})` : '';
-    const name = baseName + suffix;
-    const price = Math.round((12000 + (i * 3800) + ((i % 9) * 7500)) / 500) * 500;
-    const unit = units[i % units.length];
-    fruits.push({ name, price, unit });
-  }
-
-  return fruits;
-}
-
-const DEFAULT_FRUITS = generate100SampleFruits();
-
 // In-memory cache to prevent repeated localStorage & JSON parsing lag
 let cachedNotes = null;
 const currencyFormatter = new Intl.NumberFormat('vi-VN');
@@ -84,7 +38,7 @@ function getFruitEmoji(name) {
 
 function loadNotes() {
   if (cachedNotes !== null) return cachedNotes;
-  cachedNotes = loadStoredNotes(DEFAULT_FRUITS);
+  cachedNotes = loadStoredNotes();
   return cachedNotes;
 }
 
@@ -139,6 +93,7 @@ function createFruitCard(note, index) {
         <span class="price-currency">VNĐ / ${escapeHtml(unit)}</span>
       </div>
       <div class="card-actions">
+        <button class="edit-btn" onclick="editNote(${index})" title="Chỉnh sửa trái cây này">✎</button>
         <button class="delete-btn" onclick="deleteNote(${index})" title="Xóa trái cây này">✕</button>
       </div>
     </div>
@@ -211,7 +166,12 @@ function scheduleRender() {
   });
 }
 
+let editingIndex = null;
+
 function openModal() {
+  editingIndex = null;
+  document.getElementById('modalTitle').textContent = '➕ Thêm Trái Cây Mới';
+  document.getElementById('addBtn').textContent = 'Thêm Vào Lưới';
   const modal = document.getElementById('addModal');
   if (modal) {
     modal.classList.add('active');
@@ -226,7 +186,23 @@ function closeModal() {
     modal.classList.remove('active');
     const form = document.getElementById('addForm');
     if (form) form.reset();
+    editingIndex = null;
   }
+}
+
+function editNote(idx) {
+  const notes = loadNotes();
+  const note = notes[idx];
+  if (!note) return;
+
+  editingIndex = idx;
+  document.getElementById('modalTitle').textContent = '✎ Chỉnh Sửa Trái Cây';
+  document.getElementById('addBtn').textContent = 'Lưu Thay Đổi';
+  document.getElementById('fruitName').value = note.name;
+  document.getElementById('fruitPrice').value = note.price;
+  document.getElementById('fruitUnit').value = note.unit || 'kg';
+  document.getElementById('addModal').classList.add('active');
+  document.getElementById('fruitName').focus();
 }
 
 function addNote() {
@@ -244,7 +220,11 @@ function addNote() {
   }
 
   const notes = loadNotes();
-  notes.unshift({ name, price, unit });
+  if (editingIndex === null) {
+    notes.unshift({ name, price, unit });
+  } else if (notes[editingIndex]) {
+    notes[editingIndex] = { ...notes[editingIndex], name, price, unit };
+  }
   saveNotes(notes);
 
   renderNotes();
@@ -262,11 +242,7 @@ function deleteNote(idx) {
 
 // Giữ tương thích với nút xóa đang dùng inline onclick trong card.
 window.deleteNote = deleteNote;
-
-function loadSampleData() {
-  saveNotes(DEFAULT_FRUITS);
-  renderNotes();
-}
+window.editNote = editNote;
 
 document.addEventListener('DOMContentLoaded', () => {
   const addForm = document.getElementById('addForm');
@@ -311,11 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const sortSelect = document.getElementById('sortSelect');
   if (sortSelect) {
     sortSelect.addEventListener('change', renderNotes);
-  }
-
-  const loadSampleBtn = document.getElementById('loadSampleBtn');
-  if (loadSampleBtn) {
-    loadSampleBtn.addEventListener('click', loadSampleData);
   }
 
   renderNotes();
