@@ -7,42 +7,12 @@ import {
   syncIntervalMs,
   updateFruit
 } from './data-service.js';
+import { getFruitIcon } from './fruit-icons.js';
 
 let cachedNotes = [];
 let hasLoadedNotes = false;
 let refreshPromise = null;
 const currencyFormatter = new Intl.NumberFormat('vi-VN');
-
-// Fast Utility: get fruit emoji by name
-function getFruitEmoji(name) {
-  const lowercase = name.toLowerCase();
-  if (lowercase.includes('nhãn') || lowercase.includes('longan')) return '🌰';
-  if (lowercase.includes('vải') || lowercase.includes('lychee') || lowercase.includes('chôm chôm') || lowercase.includes('rambutan')) return '🔴';
-  if (lowercase.includes('táo') || lowercase.includes('apple')) return '🍎';
-  if (lowercase.includes('chuối') || lowercase.includes('banana')) return '🍌';
-  if (lowercase.includes('cam') || lowercase.includes('quýt') || lowercase.includes('orange')) return '🍊';
-  if (lowercase.includes('dưa hấu') || lowercase.includes('watermelon')) return '🍉';
-  if (lowercase.includes('xoài') || lowercase.includes('mango')) return '🥭';
-  if (lowercase.includes('nho') || lowercase.includes('grape')) return '🍇';
-  if (lowercase.includes('dâu') || lowercase.includes('strawberry')) return '🍓';
-  if (lowercase.includes('bơ') || lowercase.includes('avocado')) return '🥑';
-  if (lowercase.includes('sầu riêng') || lowercase.includes('durian') || lowercase.includes('mít')) return '🍈';
-  if (lowercase.includes('dưa lưới') || lowercase.includes('melon')) return '🍈';
-  if (lowercase.includes('dứa') || lowercase.includes('thơm') || lowercase.includes('khóm') || lowercase.includes('pineapple')) return '🍍';
-  if (lowercase.includes('đào') || lowercase.includes('mận') || lowercase.includes('peach') || lowercase.includes('plum')) return '🍑';
-  if (lowercase.includes('lê') || lowercase.includes('pear')) return '🍐';
-  if (lowercase.includes('kiwi')) return '🥝';
-  if (lowercase.includes('dừa') || lowercase.includes('coconut')) return '🥥';
-  if (lowercase.includes('anh đào') || lowercase.includes('cherry')) return '🍒';
-  if (lowercase.includes('việt quất') || lowercase.includes('măng cụt') || lowercase.includes('blueberry')) return '🫐';
-  if (lowercase.includes('thanh long') || lowercase.includes('dragon')) return '🐲';
-  if (lowercase.includes('chanh') || lowercase.includes('lemon') || lowercase.includes('lime')) return '🍋';
-  if (lowercase.includes('đu đủ') || lowercase.includes('papaya')) return '🥭';
-  if (lowercase.includes('bưởi') || lowercase.includes('pomelo') || lowercase.includes('ổi') || lowercase.includes('mãng cầu')) return '🍏';
-  if (lowercase.includes('cà chua') || lowercase.includes('tomato')) return '🍅';
-  if (lowercase.includes('bắp') || lowercase.includes('ngô') || lowercase.includes('corn')) return '🌽';
-  return '🍎';
-}
 
 function updateStats(notes) {
   const totalCountEl = document.getElementById('statTotalCount');
@@ -72,13 +42,20 @@ function createFruitCard(note) {
   const card = document.createElement('div');
   card.className = 'fruit-card';
 
-  const emoji = getFruitEmoji(note.name);
+  const icon = getFruitIcon(note.name);
   const unit = note.unit || 'kg';
   const priceFormatted = currencyFormatter.format(note.price);
 
   card.innerHTML = `
     <div class="card-top">
-      <div class="fruit-emoji-avatar">${emoji}</div>
+      <div class="fruit-icon-avatar">
+        <span
+          class="fruit-icon-sprite fruit-icon-sprite--${icon.sheet}"
+          style="--sprite-x: ${icon.x}; --sprite-y: ${icon.y}; --sprite-size: ${icon.size};"
+          role="img"
+          aria-label="${escapeHtml(icon.label)}"
+        ></span>
+      </div>
       <div class="fruit-info">
         <h3 class="fruit-name" title="${escapeHtml(note.name)}">${escapeHtml(note.name)}</h3>
         <span class="unit-badge">ĐVT: ${escapeHtml(unit)}</span>

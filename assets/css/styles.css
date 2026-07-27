@@ -368,17 +368,31 @@ body {
   margin-bottom: 0.75rem;
 }
 
-.fruit-emoji-avatar {
-  font-size: 2.2rem;
+.fruit-icon-avatar {
   width: 52px;
   height: 52px;
-  background: #fff8eb;
   border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #ffedd5;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  flex: 0 0 52px;
+  overflow: hidden;
+  background: #fff8eb;
+  box-shadow: 0 2px 7px rgba(180, 83, 9, 0.12);
+}
+
+.fruit-icon-sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: var(--sprite-x) var(--sprite-y);
+  background-size: var(--sprite-size) var(--sprite-size);
+}
+
+.fruit-icon-sprite--main {
+  background-image: url('../icons/fruit-sprite-main-v1.jpg');
+}
+
+.fruit-icon-sprite--extra {
+  background-image: url('../icons/fruit-sprite-extra-v1.jpg');
 }
 
 .fruit-info {
