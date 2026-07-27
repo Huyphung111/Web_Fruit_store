@@ -1,8 +1,16 @@
 // app.js - Giao diện bảng giá trái cây
-import { loadNotes as loadStoredNotes, saveNotes as saveStoredNotes } from './data-service.js';
+import {
+  createFruit,
+  deleteFruit,
+  fetchFruits,
+  isSharedDataEnabled,
+  syncIntervalMs,
+  updateFruit
+} from './data-service.js';
 
-// In-memory cache to prevent repeated localStorage & JSON parsing lag
-let cachedNotes = null;
+let cachedNotes = [];
+let hasLoadedNotes = false;
+let refreshPromise = null;
 const currencyFormatter = new Intl.NumberFormat('vi-VN');
 
 // Fast Utility: get fruit emoji by name
@@ -36,17 +44,6 @@ function getFruitEmoji(name) {
   return '🍎';
 }
 
-function loadNotes() {
-  if (cachedNotes !== null) return cachedNotes;
-  cachedNotes = loadStoredNotes();
-  return cachedNotes;
-}
-
-function saveNotes(notes) {
-  cachedNotes = notes;
-  saveStoredNotes(notes);
-}
-
 function updateStats(notes) {
   const totalCountEl = document.getElementById('statTotalCount');
   const avgPriceEl = document.getElementById('statAvgPrice');
@@ -71,7 +68,7 @@ function updateStats(notes) {
   maxPriceEl.textContent = `${currencyFormatter.format(max)} VNĐ`;
 }
 
-function createFruitCard(note, index) {
+function createFruitCard(note) {
   const card = document.createElement('div');
   card.className = 'fruit-card';
 
@@ -93,8 +90,8 @@ function createFruitCard(note, index) {
         <span class="price-currency">VNĐ / ${escapeHtml(unit)}</span>
       </div>
       <div class="card-actions">
-        <button class="edit-btn" onclick="editNote(${index})" title="Chỉnh sửa trái cây này">✎</button>
-        <button class="delete-btn" onclick="deleteNote(${index})" title="Xóa trái cây này">✕</button>
+        <button class="edit-btn" data-action="edit" data-id="${escapeHtml(note.id)}" title="Chỉnh sửa trái cây này">✎</button>
+        <button class="delete-btn" data-action="delete" data-id="${escapeHtml(note.id)}" title="Xóa trái cây này">✕</button>
       </div>
     </div>
   `;
@@ -122,11 +119,12 @@ function renderNotes() {
   const keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
   const sortMode = sortSelect ? sortSelect.value : 'price-asc';
 
-  const notes = loadNotes();
+  const notes = cachedNotes;
   updateStats(notes);
 
-  let filteredNotes = notes.map((note, originalIndex) => ({ ...note, originalIndex }))
-                           .filter(note => note.name.toLowerCase().includes(keyword));
+  let filteredNotes = notes.filter(
+    (note) => note.name.toLowerCase().includes(keyword)
+  );
 
   // Fast Sort
   if (sortMode === 'price-asc') {
@@ -152,9 +150,78 @@ function renderNotes() {
 
   const fragment = document.createDocumentFragment();
   filteredNotes.forEach((note) => {
-    fragment.appendChild(createFruitCard(note, note.originalIndex));
+    fragment.appendChild(createFruitCard(note));
   });
   notesList.appendChild(fragment);
+}
+
+function renderLoadingState() {
+  const notesList = document.getElementById('notesList');
+  if (!notesList) return;
+  notesList.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state-icon">⏳</div>
+      <p>Đang tải bảng giá...</p>
+    </div>
+  `;
+}
+
+function notesHaveChanged(nextNotes) {
+  if (nextNotes.length !== cachedNotes.length) return true;
+  return nextNotes.some((note, index) => {
+    const current = cachedNotes[index];
+    return !current ||
+      note.id !== current.id ||
+      note.name !== current.name ||
+      Number(note.price) !== Number(current.price) ||
+      note.unit !== current.unit ||
+      note.updated_at !== current.updated_at;
+  });
+}
+
+async function refreshNotes({ showLoading = false } = {}) {
+  if (refreshPromise) return refreshPromise;
+
+  if (showLoading && !hasLoadedNotes) renderLoadingState();
+
+  refreshPromise = (async () => {
+    try {
+      const nextNotes = await fetchFruits();
+      const changed = notesHaveChanged(nextNotes);
+      cachedNotes = nextNotes;
+      hasLoadedNotes = true;
+      if (changed || showLoading) renderNotes();
+    } catch (error) {
+      console.error('Không thể tải bảng giá:', error);
+      if (!hasLoadedNotes) {
+        const notesList = document.getElementById('notesList');
+        if (notesList) {
+          notesList.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">⚠️</div>
+              <p>Không thể tải bảng giá. Vui lòng thử lại sau.</p>
+            </div>
+          `;
+        }
+      }
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+function startAutoSync() {
+  if (!isSharedDataEnabled) return;
+
+  setInterval(() => {
+    if (!document.hidden) refreshNotes();
+  }, syncIntervalMs);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refreshNotes();
+  });
 }
 
 function scheduleRender() {
@@ -166,10 +233,10 @@ function scheduleRender() {
   });
 }
 
-let editingIndex = null;
+let editingId = null;
 
 function openModal() {
-  editingIndex = null;
+  editingId = null;
   document.getElementById('modalTitle').textContent = '➕ Thêm Trái Cây Mới';
   document.getElementById('addBtn').textContent = 'Thêm Vào Lưới';
   const modal = document.getElementById('addModal');
@@ -186,16 +253,15 @@ function closeModal() {
     modal.classList.remove('active');
     const form = document.getElementById('addForm');
     if (form) form.reset();
-    editingIndex = null;
+    editingId = null;
   }
 }
 
-function editNote(idx) {
-  const notes = loadNotes();
-  const note = notes[idx];
+function editNote(id) {
+  const note = cachedNotes.find((item) => item.id === id);
   if (!note) return;
 
-  editingIndex = idx;
+  editingId = id;
   document.getElementById('modalTitle').textContent = '✎ Chỉnh Sửa Trái Cây';
   document.getElementById('addBtn').textContent = 'Lưu Thay Đổi';
   document.getElementById('fruitName').value = note.name;
@@ -205,7 +271,7 @@ function editNote(idx) {
   document.getElementById('fruitName').focus();
 }
 
-function addNote() {
+async function addNote() {
   const nameInput = document.getElementById('fruitName');
   const priceInput = document.getElementById('fruitPrice');
   const unitSelect = document.getElementById('fruitUnit');
@@ -219,37 +285,44 @@ function addNote() {
     return;
   }
 
-  const notes = loadNotes();
-  if (editingIndex === null) {
-    notes.unshift({ name, price, unit });
-  } else if (notes[editingIndex]) {
-    notes[editingIndex] = { ...notes[editingIndex], name, price, unit };
-  }
-  saveNotes(notes);
+  const submitButton = document.getElementById('addBtn');
+  const originalButtonText = submitButton.textContent;
+  submitButton.disabled = true;
+  submitButton.textContent = 'Đang lưu...';
 
-  renderNotes();
-  closeModal();
+  try {
+    if (editingId === null) {
+      await createFruit({ name, price, unit });
+    } else {
+      await updateFruit(editingId, { name, price, unit });
+    }
+    await refreshNotes();
+    closeModal();
+  } catch (error) {
+    console.error('Không thể lưu trái cây:', error);
+    alert(`Không thể lưu dữ liệu: ${error.message}`);
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = originalButtonText;
+  }
 }
 
-function deleteNote(idx) {
-  const notes = loadNotes();
-  if (idx >= 0 && idx < notes.length) {
-    notes.splice(idx, 1);
-    saveNotes(notes);
-    renderNotes();
+async function deleteNote(id) {
+  try {
+    await deleteFruit(id);
+    await refreshNotes();
+  } catch (error) {
+    console.error('Không thể xóa trái cây:', error);
+    alert(`Không thể xóa dữ liệu: ${error.message}`);
   }
 }
 
-// Giữ tương thích với nút xóa đang dùng inline onclick trong card.
-window.deleteNote = deleteNote;
-window.editNote = editNote;
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const addForm = document.getElementById('addForm');
   if (addForm) {
-    addForm.addEventListener('submit', (e) => {
+    addForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      addNote();
+      await addNote();
     });
   }
 
@@ -289,5 +362,20 @@ document.addEventListener('DOMContentLoaded', () => {
     sortSelect.addEventListener('change', renderNotes);
   }
 
-  renderNotes();
+  const notesList = document.getElementById('notesList');
+  if (notesList) {
+    notesList.addEventListener('click', async (event) => {
+      const button = event.target.closest('button[data-action][data-id]');
+      if (!button) return;
+
+      if (button.dataset.action === 'edit') {
+        editNote(button.dataset.id);
+      } else if (button.dataset.action === 'delete') {
+        await deleteNote(button.dataset.id);
+      }
+    });
+  }
+
+  await refreshNotes({ showLoading: true });
+  startAutoSync();
 });
