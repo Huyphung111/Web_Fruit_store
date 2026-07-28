@@ -384,7 +384,7 @@ body {
   height: 100%;
   background-repeat: no-repeat;
   background-position: var(--sprite-x) var(--sprite-y);
-  background-size: var(--sprite-size) var(--sprite-size);
+  background-size: var(--sprite-size-x) var(--sprite-size-y);
 }
 
 .fruit-icon-sprite--main {
@@ -393,6 +393,10 @@ body {
 
 .fruit-icon-sprite--extra {
   background-image: url('../icons/fruit-sprite-extra-v2.jpg');
+}
+
+.fruit-icon-sprite--detail {
+  background-image: url('../icons/fruit-sprite-detail-v1.jpg');
 }
 
 .fruit-info {

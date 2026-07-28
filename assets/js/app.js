@@ -53,7 +53,7 @@ function createFruitCard(note) {
       <div class="fruit-icon-avatar">
         <span
           class="fruit-icon-sprite fruit-icon-sprite--${icon.sheet}"
-          style="--sprite-x: ${icon.x}; --sprite-y: ${icon.y}; --sprite-size: ${icon.size};"
+          style="--sprite-x: ${icon.x}; --sprite-y: ${icon.y}; --sprite-size-x: ${icon.sizeX}; --sprite-size-y: ${icon.sizeY};"
           role="img"
           aria-label="${escapeHtml(icon.label)}"
         ></span>
@@ -271,11 +271,15 @@ async function addNote() {
 
   try {
     if (editingId === null) {
-      await createFruit({ name, price, unit });
+      const createdNote = await createFruit({ name, price, unit });
+      cachedNotes.unshift(createdNote);
     } else {
-      await updateFruit(editingId, { name, price, unit });
+      const updatedNote = await updateFruit(editingId, { name, price, unit });
+      const index = cachedNotes.findIndex((item) => item.id === editingId);
+      if (index !== -1) cachedNotes[index] = updatedNote;
     }
-    await refreshNotes();
+    cacheFruits(cachedNotes);
+    renderNotes();
     closeModal();
   } catch (error) {
     console.error('Không thể lưu trái cây:', error);

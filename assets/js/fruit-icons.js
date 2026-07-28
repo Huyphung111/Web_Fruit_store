@@ -23,12 +23,28 @@ const ICONS = {
   'jackfruit-box': { sheet: 'extra', column: 2, row: 1, grid: 3, label: 'Hộp mít' },
   papaya: { sheet: 'extra', column: 0, row: 2, grid: 3, label: 'Đu đủ' },
   plum: { sheet: 'extra', column: 1, row: 2, grid: 3, label: 'Mận' },
-  passionfruit: { sheet: 'extra', column: 2, row: 2, grid: 3, label: 'Chanh dây' }
+  passionfruit: { sheet: 'extra', column: 2, row: 2, grid: 3, label: 'Chanh dây' },
+  'banana-su': { sheet: 'detail', column: 0, row: 0, columns: 4, rows: 3, label: 'Chuối sứ' },
+  'banana-cau': { sheet: 'detail', column: 1, row: 0, columns: 4, rows: 3, label: 'Chuối cau' },
+  'banana-green': { sheet: 'detail', column: 2, row: 0, columns: 4, rows: 3, label: 'Chuối già xanh' },
+  'dragon-fruit-red': { sheet: 'detail', column: 3, row: 0, columns: 4, rows: 3, label: 'Thanh long ruột đỏ' },
+  'dragon-fruit-white': { sheet: 'detail', column: 0, row: 1, columns: 4, rows: 3, label: 'Thanh long ruột trắng' },
+  pear: { sheet: 'detail', column: 1, row: 1, columns: 4, rows: 3, label: 'Lê' },
+  sapodilla: { sheet: 'detail', column: 2, row: 1, columns: 4, rows: 3, label: 'Sapo' },
+  cantaloupe: { sheet: 'detail', column: 3, row: 1, columns: 4, rows: 3, label: 'Dưa lưới' },
+  'custard-apple': { sheet: 'detail', column: 0, row: 2, columns: 4, rows: 3, label: 'Mãng cầu ta' },
+  pomegranate: { sheet: 'detail', column: 2, row: 2, columns: 4, rows: 3, label: 'Lựu' },
+  rambutan: { sheet: 'detail', column: 3, row: 2, columns: 4, rows: 3, label: 'Chôm chôm' }
 };
 
 // Quy tắc cụ thể phải đứng trước quy tắc chung.
 const RULES = [
   { icon: 'jackfruit-box', keywords: ['hộp mít', 'hop mit', 'mít tách múi', 'mit tach mui', 'mít đóng hộp', 'jackfruit box'] },
+  { icon: 'banana-su', keywords: ['chuối sứ', 'chuoi su', 'chuối xiêm', 'chuoi xiem', 'pisang awak'] },
+  { icon: 'banana-cau', keywords: ['chuối cau', 'chuoi cau'] },
+  { icon: 'banana-green', keywords: ['chuối già', 'chuoi gia'] },
+  { icon: 'dragon-fruit-red', keywords: ['thanh long ruột đỏ', 'thanh long ruot do', 'thanh long ruột hồng', 'thanh long ruot hong', 'red dragon fruit'] },
+  { icon: 'dragon-fruit-white', keywords: ['thanh long ruột trắng', 'thanh long ruot trang', 'white dragon fruit'] },
   { icon: 'guava-pink', keywords: ['ổi ruột đỏ', 'oi ruot do', 'ổi ruột hồng', 'oi ruot hong', 'ổi hồng', 'pink guava', 'red guava'] },
   { icon: 'guava-white', keywords: ['ổi ruột trắng', 'oi ruot trang', 'ổi trắng', 'oi trang', 'white guava', 'ổi', 'guava'] },
   { icon: 'passionfruit', keywords: ['chanh dây', 'chanh day', 'chanh leo', 'passion fruit', 'passionfruit'] },
@@ -40,11 +56,17 @@ const RULES = [
   { icon: 'pineapple', keywords: ['dứa', 'thơm', 'thom', 'khóm', 'khom', 'pineapple'] },
   { icon: 'jackfruit', keywords: ['mít', 'mit', 'jackfruit'] },
   { icon: 'papaya', keywords: ['đu đủ', 'du du', 'papaya'] },
-  { icon: 'longan', keywords: ['nhãn', 'nhan', 'longan', 'vải', 'vai thieu', 'lychee', 'chôm chôm', 'chom chom', 'rambutan'] },
+  { icon: 'rambutan', keywords: ['chôm chôm', 'chom chom', 'rambutan'] },
+  { icon: 'longan', keywords: ['nhãn', 'nhan', 'longan', 'vải', 'vai thieu', 'lychee'] },
   { icon: 'cherry', keywords: ['cherry', 'anh đào', 'anh dao'] },
   { icon: 'peach', keywords: ['đào', 'dao tien', 'dao vang', 'peach'] },
   { icon: 'plum', keywords: ['mận', 'man hau', 'man an phuoc', 'plum'] },
-  { icon: 'pomelo', keywords: ['bưởi', 'buoi', 'pomelo', 'grapefruit'] },
+  { icon: 'cantaloupe', keywords: ['dưa lưới', 'dua luoi', 'dưa gang', 'dua gang', 'cantaloupe', 'melon'] },
+  { icon: 'custard-apple', keywords: ['mãng cầu ta', 'mang cau ta', 'mãng cầu dai', 'mang cau dai', 'mãng cầu', 'mang cau', 'quả na', 'qua na', 'na dai', 'sugar apple', 'custard apple'] },
+  { icon: 'pomegranate', keywords: ['lựu', 'luu do', 'pomegranate'] },
+  { icon: 'sapodilla', keywords: ['sapo', 'sa pô', 'sa po', 'hồng xiêm', 'hong xiem', 'sapodilla'] },
+  { icon: 'pear', keywords: ['lê', 'le han quoc', 'pear'] },
+  { icon: 'pomelo', keywords: ['bưởi', 'buoi', 'bòng', 'bong', 'pomelo', 'grapefruit'] },
   { icon: 'kiwi', keywords: ['kiwi'] },
   { icon: 'avocado', keywords: ['bơ', 'bo sap', 'bo hass', 'avocado'] },
   { icon: 'strawberry', keywords: ['dâu tây', 'dau tay', 'strawberry', 'việt quất', 'viet quat', 'blueberry', 'raspberry'] },
@@ -52,7 +74,7 @@ const RULES = [
   { icon: 'mango', keywords: ['xoài', 'xoai', 'mango'] },
   { icon: 'banana', keywords: ['chuối', 'chuoi', 'banana'] },
   { icon: 'orange', keywords: ['cam', 'quýt', 'quyt', 'orange', 'mandarin', 'chanh vàng', 'chanh vang', 'lemon', 'lime'] },
-  { icon: 'apple', keywords: ['táo', 'tao', 'apple', 'lê', 'le han quoc', 'pear'] }
+  { icon: 'apple', keywords: ['táo', 'tao', 'apple'] }
 ];
 
 function cleanPhrase(value) {
@@ -94,12 +116,14 @@ export function getFruitIconKey(name) {
 export function getFruitIcon(name) {
   const key = getFruitIconKey(name);
   const icon = ICONS[key];
-  const divisor = icon.grid - 1;
+  const columns = icon.columns || icon.grid;
+  const rows = icon.rows || icon.grid;
   return {
     ...icon,
     key,
-    x: `${(icon.column * 100) / divisor}%`,
-    y: `${(icon.row * 100) / divisor}%`,
-    size: `${icon.grid * 100}%`
+    x: `${columns === 1 ? 0 : (icon.column * 100) / (columns - 1)}%`,
+    y: `${rows === 1 ? 0 : (icon.row * 100) / (rows - 1)}%`,
+    sizeX: `${columns * 100}%`,
+    sizeY: `${rows * 100}%`
   };
 }
