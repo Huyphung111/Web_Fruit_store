@@ -33,6 +33,7 @@ const ICONS = {
   sapodilla: { sheet: 'detail', column: 2, row: 1, columns: 4, rows: 3, label: 'Sapo' },
   cantaloupe: { sheet: 'detail', column: 3, row: 1, columns: 4, rows: 3, label: 'Dưa lưới' },
   'custard-apple': { sheet: 'detail', column: 0, row: 2, columns: 4, rows: 3, label: 'Mãng cầu ta' },
+  'seedless-watermelon': { sheet: 'detail', column: 1, row: 2, columns: 4, rows: 3, label: 'Dưa hấu không hạt' },
   pomegranate: { sheet: 'detail', column: 2, row: 2, columns: 4, rows: 3, label: 'Lựu' },
   rambutan: { sheet: 'detail', column: 3, row: 2, columns: 4, rows: 3, label: 'Chôm chôm' }
 };
@@ -45,6 +46,7 @@ const RULES = [
   { icon: 'banana-green', keywords: ['chuối già', 'chuoi gia'] },
   { icon: 'dragon-fruit-red', keywords: ['thanh long ruột đỏ', 'thanh long ruot do', 'thanh long ruột hồng', 'thanh long ruot hong', 'red dragon fruit'] },
   { icon: 'dragon-fruit-white', keywords: ['thanh long ruột trắng', 'thanh long ruot trang', 'white dragon fruit'] },
+  { icon: 'seedless-watermelon', keywords: ['dưa hấu không hạt', 'dua hau khong hat', 'seedless watermelon'] },
   { icon: 'guava-pink', keywords: ['ổi ruột đỏ', 'oi ruot do', 'ổi ruột hồng', 'oi ruot hong', 'ổi hồng', 'pink guava', 'red guava'] },
   { icon: 'guava-white', keywords: ['ổi ruột trắng', 'oi ruot trang', 'ổi trắng', 'oi trang', 'white guava', 'ổi', 'guava'] },
   { icon: 'passionfruit', keywords: ['chanh dây', 'chanh day', 'chanh leo', 'passion fruit', 'passionfruit'] },

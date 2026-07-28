@@ -396,7 +396,7 @@ body {
 }
 
 .fruit-icon-sprite--detail {
-  background-image: url('../icons/fruit-sprite-detail-v1.jpg');
+  background-image: url('../icons/fruit-sprite-detail-v2.jpg');
 }
 
 .fruit-info {
@@ -409,9 +409,9 @@ body {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-main);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .unit-badge {

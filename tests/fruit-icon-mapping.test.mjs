@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { getFruitIcon, getFruitIconKey } from '../assets/js/fruit-icons.js';
 
 export const CASES_BY_ICON = {
@@ -10,7 +11,8 @@ export const CASES_BY_ICON = {
   'banana-green': ['Chuối Già Xanh', 'Chuoi Gia Nam Mỹ'],
   mango: ['Xoài Cát Hòa Lộc', 'Xoài Tượng', 'Mango Keo', 'Xoai Uc', 'Xoài Thái'],
   grape: ['Nho Mẫu Đơn', 'Nho Đen Không Hạt', 'Grape Red Globe', 'Nho Xanh', 'Grape Shine Muscat'],
-  watermelon: ['Dưa Hấu Không Hạt', 'Dưa Hấu Vàng', 'Watermelon Sugar Baby', 'Dua Hau Long An', 'Dưa Hấu Mini'],
+  watermelon: ['Dưa Hấu Vàng', 'Watermelon Sugar Baby', 'Dua Hau Long An', 'Dưa Hấu Mini'],
+  'seedless-watermelon': ['Dưa Hấu Không Hạt', 'Dua Hau Khong Hat Long An', 'Seedless Watermelon'],
   strawberry: ['Dâu Tây Đà Lạt', 'Strawberry Hàn Quốc', 'Việt Quất Nhập Khẩu', 'Blueberry Mỹ', 'Raspberry Đỏ'],
   avocado: ['Bơ Sáp Đắk Lắk', 'Bơ 034', 'Bo Hass', 'Avocado Úc', 'Bơ Booth'],
   durian: ['Sầu Riêng Ri6', 'Sầu Riêng Monthong', 'Sau Rieng Musang King', 'Durian Thái', 'Sầu Riêng Khổ Qua'],
@@ -72,5 +74,26 @@ assert.deepEqual(
   },
   'Sprite chi tiết 4x3 phải dùng đúng kích thước và tọa độ.'
 );
+
+assert.deepEqual(
+  {
+    key: getFruitIcon('Dưa hấu không hạt').key,
+    sheet: getFruitIcon('Dưa hấu không hạt').sheet,
+    x: getFruitIcon('Dưa hấu không hạt').x,
+    y: getFruitIcon('Dưa hấu không hạt').y
+  },
+  {
+    key: 'seedless-watermelon',
+    sheet: 'detail',
+    x: `${100 / 3}%`,
+    y: '100%'
+  },
+  'Dưa hấu không hạt phải dùng ô không hạt riêng.'
+);
+
+const styles = readFileSync(new URL('../assets/css/styles.css', import.meta.url), 'utf8');
+const fruitNameStyles = styles.match(/\.fruit-name\s*\{[^}]+\}/)?.[0] || '';
+assert.match(fruitNameStyles, /white-space:\s*normal/, 'Tên dài phải được phép xuống dòng.');
+assert.doesNotMatch(fruitNameStyles, /text-overflow:\s*ellipsis/, 'Tên dài không được hiện dấu ba chấm.');
 
 console.log(`Fruit icon mapping: PASS (${checked} trường hợp)`);
